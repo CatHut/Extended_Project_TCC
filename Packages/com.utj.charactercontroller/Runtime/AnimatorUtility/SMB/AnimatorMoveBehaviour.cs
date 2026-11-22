@@ -49,6 +49,26 @@ namespace Unity.TinyCharacterController.Smb
 
         public bool IsFixedPosition => _isFixedPosition;
 
+        /// <summary>
+        /// For Humanoid avatars, scale the root motion movement by <see cref="ReferenceHumanScale"/> / Animator.humanScale.
+        /// When enabled, avatars of different sizes move the same distance as the avatar used to create the motion.
+        /// When disabled, the movement follows the avatar size (default Unity behavior).
+        /// </summary>
+        [SerializeField]
+        [Tooltip("For Humanoid avatars, unify the movement distance regardless of the avatar size. When disabled, the movement follows the avatar size (default Unity behavior).")]
+        private bool _normalizeHumanScale = false;
+
+        /// <summary>
+        /// The humanScale of the model used to create the motion.
+        /// </summary>
+        [SerializeField, Min(0.0001f)]
+        [Tooltip("The humanScale of the model used to create this motion. All avatars move the same distance as this model.")]
+        private float _referenceHumanScale = 1f;
+
+        public bool NormalizeHumanScale => _normalizeHumanScale;
+
+        public float ReferenceHumanScale => _referenceHumanScale;
+
         public bool IsInRange(AnimatorStateInfo info)
         {
             var normalizedTime = info.loop ? info.normalizedTime % 1 : info.normalizedTime;

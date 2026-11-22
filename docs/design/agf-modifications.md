@@ -137,15 +137,30 @@
 
 ### Extended_Project_TCC への反映
 
-正規化するかどうかを選べる形にして反映した。
+モーション（ステート）ごとに、正規化するかどうかを選べる形にして反映した。AGF は AnimatorMoveControl に基準値を 1 つ持つので、すべてのモーションが同じ基準になる。購入したモーションなど、作成に使ったモデルがモーションごとに違う場合に対応できないため、AnimatorMoveBehaviour に持たせた。
 
-- Inspector 項目
-  - `Normalize Human Scale`: 正規化するかどうか。**初期値は無効**で、元の TCC と同じ挙動（アバターの大きさに比例して移動量が変わる）になる
-  - `Reference Human Scale`: 移動距離の基準にするアバターの humanScale。初期値は `1`（クリップ自体の、正規化された移動量になる）
+#### 考え方
+
+Humanoid のクリップは、ルートの移動量を**モーション作成に使ったモデル（A）の humanScale で割った値**で保存し、再生するアバターの humanScale を掛けて戻す。クリップには A の humanScale は記録されない。
+
+| 設定 | アバター B で再生したときの移動量（A で作った移動量を 1m とする） |
+|---|---|
+| 正規化 無効（初期値。Unity 標準） | 1m × hB / hA（アバターの大きさに比例する） |
+| 正規化 有効、Reference Human Scale = hA | 1m（どのアバターでも A と同じ） |
+
+#### 仕様
+
+- AnimatorMoveBehaviour の Inspector 項目
+  - `Normalize Human Scale`: 正規化するかどうか。**初期値は無効**で、元の TCC と同じ挙動になる
+  - `Reference Human Scale`: モーション作成に使ったモデルの humanScale。初期値は `1`
 - 有効なときは、ルートモーションの速度と deltaPosition に `Reference Human Scale / Animator.humanScale` を掛ける。回転には掛けない
 - **Humanoid のアバター（`Animator.isHuman`）にだけ適用する**。AGF の問題点を直したもの
-- アバターの切り替えに合わせて変えられるよう、`NormalizeHumanScale` / `ReferenceHumanScale` プロパティでも読み書きできる
-- AGF と同じ挙動にするには、`Normalize Human Scale` を有効にし、`Reference Human Scale` を AGF で設定していた値にする
+- Inspector（`AnimatorMoveBehaviourEditor`）に、Model 欄と「Prefab から取得」ボタンを置いた。Humanoid の Avatar を持つ Prefab または FBX を指定してボタンを押すと、その humanScale を `Reference Human Scale` に書き込む。アニメーション用の FBX でも、自分の Avatar を持っていれば取得できる
+- humanScale は標準の Inspector には表示されない。値を確かめる場合もこのボタンを使う
+
+#### AGF の設定を移す場合
+
+AGF は基準値 1 で全モーションを正規化していた。同じ挙動にするには、各 AnimatorMoveBehaviour の `Normalize Human Scale` を有効にし、`Reference Human Scale` を 1 のままにする。モデル A の距離に合わせる場合は、`Reference Human Scale` に A の humanScale を設定する（技の移動距離が A の humanScale 倍に変わるので、AGF で調整済みの技の距離も変わる）
 
 ## CM-01000: ISS-00051 の調査ログと低 FPS 対策を入れて削除（差し引きなし）
 

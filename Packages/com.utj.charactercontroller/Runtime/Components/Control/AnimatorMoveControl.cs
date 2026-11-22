@@ -29,16 +29,6 @@ namespace Unity.TinyCharacterController.Control
         public int MovePriority = 10;
         public int TurnPriority = 10;
 
-        [Header("Human Scale Normalization")]
-        [Tooltip("For Humanoid avatars, scale the root motion movement by ReferenceHumanScale / Animator.humanScale. " +
-                 "Use this to keep the movement distance of a motion the same between avatars of different sizes. " +
-                 "When disabled, the movement follows the avatar size (default Unity behavior).")]
-        [SerializeField] private bool _normalizeHumanScale = false;
-
-        [Tooltip("The humanScale of the avatar whose movement distance is treated as the standard. " +
-                 "With 1, the movement distance is the clip's own (normalized) movement.")]
-        [SerializeField, Min(0.0001f)] private float _referenceHumanScale = 1f;
-
         [Header("Fixed Position")]
         [Tooltip("When IsFixedPosition is enabled, subtract the descent blocked by the ground (or other colliders) from the following upward movement. " +
                  "Prevents the character from floating after landing when the root of the clip goes below its starting height (e.g. crouching on landing).")]
@@ -72,27 +62,6 @@ namespace Unity.TinyCharacterController.Control
         /// Whether to use ground normal for movement.
         /// </summary>
         public bool UseGroundNormal { get; set; } = true;
-
-        /// <summary>
-        /// Whether to normalize the root motion movement of Humanoid avatars by <see cref="ReferenceHumanScale"/>.
-        /// When true, avatars of different sizes move the same distance with the same motion.
-        /// Has no effect on Generic avatars.
-        /// </summary>
-        public bool NormalizeHumanScale
-        {
-            get => _normalizeHumanScale;
-            set => _normalizeHumanScale = value;
-        }
-
-        /// <summary>
-        /// The humanScale of the avatar whose movement distance is treated as the standard.
-        /// Used when <see cref="NormalizeHumanScale"/> is true. Must be greater than 0.
-        /// </summary>
-        public float ReferenceHumanScale
-        {
-            get => _referenceHumanScale;
-            set => _referenceHumanScale = Mathf.Max(0.0001f, value);
-        }
 
         /// <summary>
         /// Connect with the animator.
@@ -165,7 +134,7 @@ namespace Unity.TinyCharacterController.Control
             
             // Root motion of Humanoid avatars is scaled by Animator.humanScale.
             // Optionally cancel it so that the movement distance does not depend on the avatar size.
-            var scale = GetHumanScaleFactor();
+            var scale = GetHumanScaleFactor(behaviour);
             var rootVelocity = _rootMotionReceiver.Velocity * scale;
             var rootDeltaPosition = _rootMotionReceiver.DeltaPosition * scale;
 
@@ -262,15 +231,17 @@ namespace Unity.TinyCharacterController.Control
 
         /// <summary>
         /// Factor to multiply the root motion by.
-        /// Returns ReferenceHumanScale / Animator.humanScale for Humanoid avatars when <see cref="NormalizeHumanScale"/> is true, otherwise 1.
+        /// Returns ReferenceHumanScale / Animator.humanScale for Humanoid avatars
+        /// when <see cref="AnimatorMoveBehaviour.NormalizeHumanScale"/> is enabled, otherwise 1.
         /// </summary>
-        private float GetHumanScaleFactor()
+        private float GetHumanScaleFactor(AnimatorMoveBehaviour behaviour)
         {
-            if (_normalizeHumanScale == false || _animator.isHuman == false)
+            if (behaviour.NormalizeHumanScale == false || _animator.isHuman == false)
                 return 1f;
 
             var humanScale = _animator.humanScale;
-            return humanScale > 0f ? _referenceHumanScale / humanScale : 1f;
+            var reference = behaviour.ReferenceHumanScale;
+            return humanScale > 0f && reference > 0f ? reference / humanScale : 1f;
         }
 
         /// <summary>

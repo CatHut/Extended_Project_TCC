@@ -1,5 +1,6 @@
 {
-    "name": "UC01-Move",
+    "version": 1,
+    "name": "UC-01-01_Move",
     "maps": [
         {
             "name": "Player",
@@ -12,7 +13,8 @@
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": true,
+                    "priority": 0
                 }
             ],
             "bindings": [

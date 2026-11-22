@@ -2,7 +2,8 @@
     "name": "TinyCharacterController.InputSystem",
     "rootNamespace": "TinyCharacterController.Extensions",
     "references": [
-        "GUID:75469ad4d38634e559750d17036d5f7c"
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:fd9b4bfdbc54f44ec99514cf98018183"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

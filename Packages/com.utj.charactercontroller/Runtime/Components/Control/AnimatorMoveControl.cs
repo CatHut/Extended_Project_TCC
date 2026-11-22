@@ -29,9 +29,20 @@ namespace Unity.TinyCharacterController.Control
         public int MovePriority = 10;
         public int TurnPriority = 10;
 
+        [Header("Fixed Position")]
+        [Tooltip("When IsFixedPosition is enabled, subtract the descent blocked by the ground (or other colliders) from the following upward movement. " +
+                 "Prevents the character from floating after landing when the root of the clip goes below its starting height (e.g. crouching on landing).")]
+        [SerializeField] private bool _compensateBlockedDescent = true;
+
+        private const float BlockedDescentThreshold = 0.0001f;
+
         private bool _isFixedPosition = false; // Perform movement with Warp, preventing external influences.
         private bool _isWorkComponent; // When this setting is true, priorities are enabled.
         private Vector3 _velocity; // Character's movement vector.
+        private Vector3 _deltaPosition; // Character's movement in this frame. Used for IsFixedPosition.
+        private float _blockedDescent; // Accumulated descent blocked by colliders, not yet cancelled.
+        private bool _hasRequestedPosition; // Whether a position was requested by Warp in the previous frame.
+        private Vector3 _requestedPosition; // Position requested by Warp in the previous frame.
         private float _turn; // Character's Y-axis direction.
         private bool _hasGroundCheck; // Enable GroundCheck correction.
 
@@ -113,6 +124,7 @@ namespace Unity.TinyCharacterController.Control
             if (isInProgress == false)
             {
                 _isWorkComponent = false;
+                ResetBlockedDescent();
                 return;
             }
 
@@ -125,15 +137,21 @@ namespace Unity.TinyCharacterController.Control
             {
                 // Calculate the vector considering the slope of the ground.
                 // Treat as a flat plane if there is no GroundCheck.
-                var velocity = _rootMotionReceiver.Velocity;
                 var normal = _hasGroundCheck ? _groundCheck.GroundSurfaceNormal : Vector3.up;
-                _velocity = Vector3.ProjectOnPlane(velocity, normal);
+                _velocity = Vector3.ProjectOnPlane(_rootMotionReceiver.Velocity, normal);
+                _deltaPosition = Vector3.ProjectOnPlane(_rootMotionReceiver.DeltaPosition, normal);
             }
             else
             {
                 // Calculate the vector without considering the slope of the ground.
                 _velocity = _rootMotionReceiver.Velocity;
+                _deltaPosition = _rootMotionReceiver.DeltaPosition;
             }
+
+            if (_isFixedPosition && _compensateBlockedDescent)
+                CompensateBlockedDescent();
+            else
+                ResetBlockedDescent();
 
             // Calculate character direction.
             var angle = _transform.rotation * _rootMotionReceiver.Rotation;
@@ -171,8 +189,47 @@ namespace Unity.TinyCharacterController.Control
             if (_isFixedPosition)
             {
                 // Update the position through Warp.
-                _warp.Move(_transform.position + _velocity * deltaTime);
+                // Use the delta position directly. Converting it to velocity and multiplying by this frame's deltaTime
+                // does not match the animation when the frame time fluctuates.
+                _requestedPosition = _transform.position + _deltaPosition;
+                _hasRequestedPosition = true;
+                _warp.Move(_requestedPosition);
             }
+        }
+
+        /// <summary>
+        /// If the character stopped above the position requested in the previous frame, accumulate the difference.
+        /// While there is an accumulated amount, subtract it from the upward movement.
+        /// Applying root motion as deltas loses the movement blocked by collisions, so without this,
+        /// a clip whose root goes below the ground on landing makes the character float by that amount when it stands up.
+        /// </summary>
+        private void CompensateBlockedDescent()
+        {
+            if (_hasRequestedPosition)
+            {
+                // Count only near the ground, to exclude position jumps such as warps.
+                var blocked = _transform.position.y - _requestedPosition.y;
+                var nearGround = _hasGroundCheck == false || _groundCheck.IsOnGround;
+                if (blocked > BlockedDescentThreshold && nearGround)
+                    _blockedDescent += blocked;
+                _hasRequestedPosition = false;
+            }
+
+            if (_blockedDescent > 0f && _deltaPosition.y > 0f)
+            {
+                var consume = Mathf.Min(_deltaPosition.y, _blockedDescent);
+                _deltaPosition.y -= consume;
+                _blockedDescent -= consume;
+            }
+        }
+
+        /// <summary>
+        /// Reset the compensation state. Called when leaving the range of <see cref="AnimatorMoveBehaviour"/>.
+        /// </summary>
+        private void ResetBlockedDescent()
+        {
+            _blockedDescent = 0f;
+            _hasRequestedPosition = false;
         }
         
         private void CacheBehaviour(int hash)

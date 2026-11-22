@@ -4,6 +4,7 @@
 
 - 調べた範囲: AGF リポジトリの `Packages/com.utj.*` と `Packages/UnityChan.SpringBone`
 - 調べた日: 2026-11-22
+- CM-01200 は、この資料の作成後に AGF の調査用ブランチ `UnityWorkspaceReference` で入れた修正。AGF の main には入っていない
 
 ## カテゴリ
 
@@ -24,21 +25,22 @@
 
 ## MOD-00200: 一覧
 
-差し引きで変更なしになるコミットは「（差し引きなし）」と書いた。
+差し引きで変更なしになるコミットは「（差し引きなし）」と書いた。「反映」列は Extended_Project_TCC への反映状況。
 
-| ID | AGF コミット | 日付 | 内容 | 主な対象 | 公開 API の追加 | 既存の挙動の変化 |
-|---|---|---|---|---|---|---|
-| CM-00100 | `7fc3fb2ac` | 2025-08-24 | Unity 6 の Rigidbody API 対応 | RigidbodyBrain, PooledGameObject | なし | なし |
-| CM-00200 | `7649337fa` | 2025-09-21 | MoveControl のブレーキ・加速を公開 | MoveControl | あり | なし |
-| CM-00300 | `2b229a909` → `55f965d6f` | 2025-09-24 | Gravity / ExtraForce の改造と Revert（差し引きなし） | Gravity, ExtraForce | — | — |
-| CM-00400 | `88a70300e` | 2025-12-13 | ルートモーションの移動量を deltaPosition で扱う | RootMotionReceiver, AnimatorMoveControl | あり | **あり** |
-| CM-00500 | `a6a075dee`, `a57654926` | 2025-12-20 | GameObjectPool をランタイムで作れるようにし、初回生成位置を直す | GameObjectPool | あり | **あり** |
-| CM-00600 | `9b4d7ff4a` | 2026-01-24 | Indicator の Offset の不具合修正と `SetTargetAndOffset` 追加 | IndicatorSystem, Indicator | あり | 不具合修正 |
-| CM-00700 | `db9975804` | 2026-01-31 | GroundCheck に Inspector 確認用のフィールドを追加 | GroundCheck | なし | なし |
-| CM-00800 | `a0ec504e4` | 2026-02-08 | ScreenSpace-Camera 用の Indicator を新規追加 | ScreenSpaceCameraIndicator(+System) | あり | なし |
-| CM-00900 | `cae25a465`, `340c5e2f1` | 2026-05-15〜19 | ルートモーションの移動量を humanScale で正規化 | AnimatorMoveControl | Inspector 項目 | **あり** |
-| CM-01000 | `4116a79b0` → `3cac306b8` | 2026-05-24 | ISS-00051 の調査ログと低 FPS 対策を入れて削除（差し引きなし） | CharacterBrain, AnimatorMoveControl | — | — |
-| CM-01100 | `00a607a07` | 2026-05-24 | Arts 実行中に XZ 移動を止めるインターフェースを追加 | CharacterBrain, IArtsXzMoveBlocker | あり | なし（実装がなければ） |
+| ID | AGF コミット | 日付 | 内容 | 主な対象 | 公開 API の追加 | 既存の挙動の変化 | 反映 |
+|---|---|---|---|---|---|---|---|
+| CM-00100 | `7fc3fb2ac` | 2025-08-24 | Unity 6 の Rigidbody API 対応 | RigidbodyBrain, PooledGameObject | なし | なし | 未 |
+| CM-00200 | `7649337fa` | 2025-09-21 | MoveControl のブレーキ・加速を公開 | MoveControl | あり | なし | 未 |
+| CM-00300 | `2b229a909` → `55f965d6f` | 2025-09-24 | Gravity / ExtraForce の改造と Revert（差し引きなし） | Gravity, ExtraForce | — | — | 対象外 |
+| CM-00400 | `88a70300e` | 2025-12-13 | ルートモーションの移動量を deltaPosition で扱う | RootMotionReceiver, AnimatorMoveControl | あり | **あり** | 済（一部） |
+| CM-00500 | `a6a075dee`, `a57654926` | 2025-12-20 | GameObjectPool をランタイムで作れるようにし、初回生成位置を直す | GameObjectPool | あり | **あり** | 未 |
+| CM-00600 | `9b4d7ff4a` | 2026-01-24 | Indicator の Offset の不具合修正と `SetTargetAndOffset` 追加 | IndicatorSystem, Indicator | あり | 不具合修正 | 未 |
+| CM-00700 | `db9975804` | 2026-01-31 | GroundCheck に Inspector 確認用のフィールドを追加 | GroundCheck | なし | なし | 未 |
+| CM-00800 | `a0ec504e4` | 2026-02-08 | ScreenSpace-Camera 用の Indicator を新規追加 | ScreenSpaceCameraIndicator(+System) | あり | なし | 未 |
+| CM-00900 | `cae25a465`, `340c5e2f1` | 2026-05-15〜19 | ルートモーションの移動量を humanScale で正規化 | AnimatorMoveControl | Inspector 項目 | **あり** | 見送り |
+| CM-01000 | `4116a79b0` → `3cac306b8` | 2026-05-24 | ISS-00051 の調査ログと低 FPS 対策を入れて削除（差し引きなし） | CharacterBrain, AnimatorMoveControl | — | — | 対象外 |
+| CM-01100 | `00a607a07` | 2026-05-24 | Arts 実行中に XZ 移動を止めるインターフェースを追加 | CharacterBrain, IArtsXzMoveBlocker | あり | なし（実装がなければ） | 未 |
+| CM-01200 | `9b9a09b5c`（`UnityWorkspaceReference`） | 2026-11-22 | 地面に止められて下がり切れなかった分を、その後の上昇から差し引く | AnimatorMoveControl | Inspector 項目 | **あり** | 済 |
 
 ## CM-00100: Unity 6 の Rigidbody API 対応
 
@@ -71,7 +73,15 @@
   - `RootMotionReceiver`: `OnAnimatorMove` で `animator.deltaPosition` / `deltaRotation` を受け取り、`DeltaPosition` / `DeltaRotation` プロパティで公開する
   - `AnimatorMoveControl`: `_velocity` とは別に `_deltaPosition` を持ち、地面の法線への投影も同じように行う。**`IsFixedPosition` の behaviour では、Warp の移動量を `_velocity * deltaTime` から `_deltaPosition` に変更**
 - 目的（コードのコメントより）: 速度に直してから戻す計算で失われる精度を避ける
+  - 実際に失われるのは精度ではなく、前のフレームの速度に今のフレームの deltaTime を掛けることによるずれ。deltaTime が揺れると、移動距離がアニメーションと合わなくなる
+  - AGF で課題だった「上昇して着地する技で、着地位置が浮く」問題の原因はこれではなかった（CM-01200）
 - 影響: `IsFixedPosition` を使う AnimatorMoveBehaviour の移動量が変わる。とくに deltaTime が揺れるときの移動距離が、アニメーションどおりになる方向に変わる
+
+### Extended_Project_TCC への反映
+
+- CM-01200 と一緒に反映した。反映したのは、`RootMotionReceiver.DeltaPosition` の追加と、`IsFixedPosition` の Warp で deltaPosition を使う変更
+- `RootMotionReceiver.DeltaRotation` は、既存の `Rotation` と同じ値（`animator.deltaRotation`）なので追加していない
+- `IsFixedPosition` でない区間は、従来どおり速度で Brain に渡す（`IMove.MoveVelocity`）
 
 ## CM-00500: GameObjectPool をランタイムで作れるようにし、初回生成位置を直す
 
@@ -125,6 +135,12 @@
 - 影響: 基準値の初期値が `1` なので、**humanScale が 1 でない Humanoid では、Inspector を何も変えなくても移動量が変わる**。TCC のサンプルで使っている Humanoid のルートモーション移動が今までと変わる可能性がある（未確認）
 - 検討点: 既存の挙動を変えたくなければ、正規化を有効にするかどうかのフラグを足す（初期値は無効）などの対応が要る
 
+### Extended_Project_TCC への反映
+
+- 見送った。基準値の初期値が `1` のままだと、humanScale が 1 でない Humanoid の移動量が黙って変わるため
+- AGF の Player（humanScale 0.6516）では、ルートモーションの移動量が約 1.535 倍（`1 / 0.6516`）になっていた。CM-01200 の浮きも、この倍率で 0.28 から 0.43 に拡大されていた
+- 必要になったら、正規化の有効・無効のフラグ（初期値は無効）とあわせて入れる
+
 ## CM-01000: ISS-00051 の調査ログと低 FPS 対策を入れて削除（差し引きなし）
 
 - コミット: `4116a79b0`「ISSと低FPS時のすり抜け対応」→ `3cac306b8`「ISS51のログを一旦削除」
@@ -146,3 +162,38 @@
 - 検討点
   - インターフェース名とコメントに、AGF 固有の言葉（「Arts」「ターゲット敵」）が入っている。汎用パッケージに置くなら `IXzMoveBlocker` のような中立な名前とコメントに変えることを勧める。ただし AGF 側の実装クラスも合わせて変える必要がある
   - XZ を止める判定が毎回の移動で呼ばれるので、実装側の判定は軽くしておく必要がある（AGF の実装はプロパティを読むたびに判定する）
+
+## CM-01200: 地面に止められて下がり切れなかった分を、その後の上昇から差し引く
+
+- コミット: AGF `9b9a09b5c`（調査用ブランチ `UnityWorkspaceReference`）。Extended_Project_TCC には同じ内容を反映済み
+- 背景: AGF で、上昇してから着地する技（`054_Spear_SkillJudgement` など）の着地位置が 0.3〜0.5m 浮き、モーションが終わると重力で地面まで落ちていた
+
+### 原因
+
+フレームごとのログで確かめた。対象の技の AnimatorMoveBehaviour は、Range 0〜1、Use Ground Normal は false、Is Fixed Position は true。
+
+- このクリップのルートの Y は、着地のしゃがみで開始時より約 0.28 下がり、そのあと元の高さに戻る
+- ルートモーションを毎フレームの差分として `CharacterController.Move` に渡すので、地面より下に行けなかった分は失われる。そのあとの立ち上がりの上昇だけが反映され、その分だけ浮く
+- ステートの終わりで AnimatorMoveControl が外れると、Gravity が効いて落ちる
+- 速度ベースの計算（CM-00400）は原因ではない。deltaPosition で動かしても同じように浮く
+
+これは差分でルートモーションを適用する方式に共通の性質で、Unity 標準の `OnAnimatorMove` で `CharacterController.Move(animator.deltaPosition)` としても同じことが起きる。TCC には、衝突で軌道がずれたときの補正がなかった。
+
+### 変更
+
+- `AnimatorMoveControl` は、`IsFixedPosition` の区間で、前のフレームに Warp で要求した位置と実際の位置を比べる。要求より上で止められていれば、その差を未相殺分として貯める
+- 未相殺分があるあいだは、上向きの移動量から差し引く。下向きと水平の移動はそのまま
+- 貯めるのは、GroundCheck の `IsOnGround` が true のときだけ（GroundCheck がなければ常に貯める）。ワープなどで位置が飛んだ場合を誤って数えないため
+- AnimatorMoveBehaviour の区間を抜けたとき、または `IsFixedPosition` でない区間に入ったときにリセットする
+- Inspector 項目 `Compensate Blocked Descent`（初期値は有効）でオフにできる
+
+### 影響
+
+- `IsFixedPosition` の区間で、衝突で下降が止められたあとの上昇が、止められた分だけ小さくなる。止められなければ何も変わらない
+- `IsFixedPosition` でない区間（速度で Brain に渡す区間）には補正が入らない。Gravity などほかの Effect と合成されるので、要求した位置を AnimatorMoveControl から特定できないため
+- 天井などで上昇が止められた場合は補正しない
+
+### 確認
+
+- AGF の `054_Spear_SkillJudgement` で、着地後に浮かず、重力で落ちる動きもなくなることを確認した
+- Extended_Project_TCC では、コンパイルが通ることだけを確認した（サンプルでの動作確認はしていない）

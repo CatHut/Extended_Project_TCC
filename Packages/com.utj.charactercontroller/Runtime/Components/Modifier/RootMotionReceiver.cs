@@ -11,6 +11,12 @@ namespace Unity.TinyCharacterController.Modifier
         public Vector3 Velocity { get; private set; }
         public Quaternion Rotation { get; private set; }
 
+        /// <summary>
+        /// Root motion movement of the last evaluated frame.
+        /// Use this instead of <see cref="Velocity"/> * deltaTime when the movement must follow the animation exactly.
+        /// </summary>
+        public Vector3 DeltaPosition { get; private set; }
+
         private Animator _animator;
 
         void Awake()
@@ -22,6 +28,7 @@ namespace Unity.TinyCharacterController.Modifier
         {
             Velocity = _animator.velocity;
             Rotation = _animator.deltaRotation;
+            DeltaPosition = _animator.deltaPosition;
         }
     }
 }

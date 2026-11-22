@@ -24,7 +24,7 @@ namespace Unity.Utility
         {
             var drawer = new GameObjectFolderHierarchyGUI();
             
-            EditorApplication.hierarchyWindowItemOnGUI += drawer.OnGui;
+            EditorApplication.hierarchyWindowItemByEntityIdOnGUI += drawer.OnGui;
         }
         
         /// <summary>
@@ -42,10 +42,10 @@ namespace Unity.Utility
             return texture;
         }
 
-        private void OnGui(int instanceId, Rect selectionRect)
+        private void OnGui(EntityId entityId, Rect selectionRect)
         {
-            // Get GameObject from instance ID, and abort if there's no GameObject.
-            if (TryGameObjectFromInstanceId(instanceId, out var gameObject) == false)
+            // Get GameObject from entity ID, and abort if there's no GameObject.
+            if (TryGameObjectFromEntityId(entityId, out var gameObject) == false)
                 return;
 
             _labelStyle = new GUIStyle(GUI.skin.label)
@@ -62,14 +62,14 @@ namespace Unity.Utility
         }
 
         /// <summary>
-        /// Get GameObject from InstanceID.
+        /// Get GameObject from EntityId.
         /// </summary>
-        /// <param name="instanceId">Instance ID</param>
+        /// <param name="entityId">Entity ID</param>
         /// <param name="obj">GameObject</param>
         /// <returns>True if successful</returns>
-        private static bool TryGameObjectFromInstanceId(int instanceId, out GameObject obj)
+        private static bool TryGameObjectFromEntityId(EntityId entityId, out GameObject obj)
         {
-            obj = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
+            obj = EditorUtility.EntityIdToObject(entityId) as GameObject;
             return obj != null;
         }
 

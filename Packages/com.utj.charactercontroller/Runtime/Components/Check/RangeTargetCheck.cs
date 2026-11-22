@@ -353,7 +353,7 @@ namespace Unity.TinyCharacterController.Check
 
                 var item = _searchTargets[tagIndex].ClosestTarget;
 
-                var id = isEmpty ? 0 : closest.GetInstanceID();
+                var id = isEmpty ? EntityId.None : closest.GetEntityId();
 
                 if (id != item.PreTransformInstance)
                 {
@@ -407,7 +407,7 @@ namespace Unity.TinyCharacterController.Check
         {
             public Transform PreTransform;
             public Transform CurrentTransform;
-            public int PreTransformInstance;
+            public EntityId PreTransformInstance;
         }
         
 

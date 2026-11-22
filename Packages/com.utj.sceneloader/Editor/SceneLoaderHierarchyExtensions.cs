@@ -15,18 +15,18 @@ namespace Unity.SceneManagement
         [InitializeOnLoadMethod]
         private static void Initialize()
         {
-            EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyGui;
+            EditorApplication.hierarchyWindowItemByEntityIdOnGUI += OnHierarchyGui;
             EditorApplication.quitting += OnQuit;
         }
 
         private static void OnQuit()
         {
-            EditorApplication.hierarchyWindowItemOnGUI -= OnHierarchyGui;
+            EditorApplication.hierarchyWindowItemByEntityIdOnGUI -= OnHierarchyGui;
         }
 
-        private static void OnHierarchyGui(int instanceId, Rect selectionRect)
+        private static void OnHierarchyGui(EntityId entityId, Rect selectionRect)
         {
-            var gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
+            var gameObject = EditorUtility.EntityIdToObject(entityId) as GameObject;
             
             // Skip if the GameObject is null or doesn't have a SceneLoader component
             if (gameObject == null || !gameObject.TryGetComponent(out SceneLoader loader))  

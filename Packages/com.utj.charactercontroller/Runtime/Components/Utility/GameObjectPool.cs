@@ -72,7 +72,7 @@ namespace Unity.TinyCharacterController.Utility
         /// </summary>
         private readonly Stack<PooledGameObject> _free = new();
 
-        private int _cachedPrefabInstanceID;
+        private EntityId _cachedPrefabInstanceID;
         private bool _hasParent;
         private bool _hasRigidbody;
         private bool _isInitialize;
@@ -131,7 +131,7 @@ namespace Unity.TinyCharacterController.Utility
         /// <summary>
         ///     The instance ID of the Prefab.
         /// </summary>
-        public int PrefabID
+        public EntityId PrefabID
         {
             get
             {
@@ -307,7 +307,7 @@ namespace Unity.TinyCharacterController.Utility
             if (_hideSpawnObject)
                 newInstance.gameObject.hideFlags = HideFlags.HideInHierarchy;
 
-            newInstance.gameObject.name = $"{_prefab.name}({newInstance.GetInstanceID()})";
+            newInstance.gameObject.name = $"{_prefab.name}({newInstance.GetEntityId()})";
 #endif
             
             return newInstance;

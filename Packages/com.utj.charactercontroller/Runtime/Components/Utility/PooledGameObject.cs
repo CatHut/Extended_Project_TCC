@@ -37,7 +37,7 @@ namespace Unity.TinyCharacterController.Utility
         private bool _hasRigidbody;
         private IGameObjectPool _owner;
         private Rigidbody _rigidbody;
-        private int _instanceId = 0;
+        private EntityId _instanceId = EntityId.None;
         private bool _initializedInstanceId = false;
 
         /// <summary>
@@ -74,14 +74,14 @@ namespace Unity.TinyCharacterController.Utility
         /// <summary>
         /// Instance ID.
         /// </summary>
-        int IPooledObject.InstanceId
+        EntityId IPooledObject.InstanceId
         {
             get
             {
                 if (_initializedInstanceId )
                     return _instanceId;
                 
-                _instanceId = gameObject.GetInstanceID();
+                _instanceId = gameObject.GetEntityId();
                 _initializedInstanceId = true;
                 return _instanceId;
             }

@@ -19,9 +19,9 @@ namespace Unity.TinyCharacterController.Interfaces.Components
         GameObject GameObject { get; }
 
         /// <summary>
-        /// An instance ID to identify the object.
+        /// An entity ID to identify the object.
         /// </summary>
-        int InstanceId { get; }
+        EntityId InstanceId { get; }
 
         /// <summary>
         /// Called when the object is retrieved.

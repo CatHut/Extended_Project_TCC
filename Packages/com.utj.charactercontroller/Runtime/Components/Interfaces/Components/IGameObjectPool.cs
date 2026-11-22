@@ -15,7 +15,7 @@ namespace Unity.TinyCharacterController.Interfaces.Components
         /// <summary>
         /// Prefab ID (used for searching).
         /// </summary>
-        int PrefabID { get; }
+        EntityId PrefabID { get; }
 
         /// <summary>
         /// The scene to which the component belongs.

@@ -16311,18 +16311,6 @@ namespace Unity.VisualScripting.Generated.Aot
 			optimized.Invoke(default(object[]));
 		}
 		
-		// Cinemachine.CinemachineImpulseSource.GenerateImpulse
-		[global::UnityEngine.Scripting.PreserveAttribute()]
-		public static void Cinemachine_CinemachineImpulseSource_GenerateImpulse()
-		{
-			global::Cinemachine.CinemachineImpulseSource target = default(global::Cinemachine.CinemachineImpulseSource);
-			float arg0 = default(float);
-			target.GenerateImpulse(arg0);
-			global::Unity.VisualScripting.InstanceActionInvoker<Cinemachine.CinemachineImpulseSource, float> optimized = new global::Unity.VisualScripting.InstanceActionInvoker<Cinemachine.CinemachineImpulseSource, float>(default(global::System.Reflection.MethodInfo));
-			optimized.Invoke(default(global::Cinemachine.CinemachineImpulseSource), arg0);
-			optimized.Invoke(default(object[]));
-		}
-		
 		// UnityEngine.ParticleSystem.Emit
 		[global::UnityEngine.Scripting.PreserveAttribute()]
 		public static void UnityEngine_ParticleSystem_Emit()

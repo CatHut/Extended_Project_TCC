@@ -37,7 +37,7 @@
 | CM-00600 | `9b4d7ff4a` | 2026-01-24 | Indicator の Offset の不具合修正と `SetTargetAndOffset` 追加 | IndicatorSystem, Indicator | あり | 不具合修正 | 未 |
 | CM-00700 | `db9975804` | 2026-01-31 | GroundCheck に Inspector 確認用のフィールドを追加 | GroundCheck | なし | なし | 未 |
 | CM-00800 | `a0ec504e4` | 2026-02-08 | ScreenSpace-Camera 用の Indicator を新規追加 | ScreenSpaceCameraIndicator(+System) | あり | なし | 未 |
-| CM-00900 | `cae25a465`, `340c5e2f1` | 2026-05-15〜19 | ルートモーションの移動量を humanScale で正規化 | AnimatorMoveControl | Inspector 項目 | **あり** | 見送り |
+| CM-00900 | `cae25a465`, `340c5e2f1` | 2026-05-15〜19 | ルートモーションの移動量を humanScale で正規化 | AnimatorMoveControl | Inspector 項目 | **あり** | 済（選択式に変更） |
 | CM-01000 | `4116a79b0` → `3cac306b8` | 2026-05-24 | ISS-00051 の調査ログと低 FPS 対策を入れて削除（差し引きなし） | CharacterBrain, AnimatorMoveControl | — | — | 対象外 |
 | CM-01100 | `00a607a07` | 2026-05-24 | Arts 実行中に XZ 移動を止めるインターフェースを追加 | CharacterBrain, IArtsXzMoveBlocker | あり | なし（実装がなければ） | 未 |
 | CM-01200 | `9b9a09b5c`（`UnityWorkspaceReference`） | 2026-11-22 | 地面に止められて下がり切れなかった分を、その後の上昇から差し引く | AnimatorMoveControl | Inspector 項目 | **あり** | 済 |
@@ -131,15 +131,21 @@
 - 変更
   - `AnimatorMoveControl` に Inspector 項目 `_referenceHumanScale`（基準アバターの humanScale）を追加。初期値は最初 `0.6516`、`340c5e2f1` で `1` に変更
   - ルートモーションの `Velocity` と `DeltaPosition` を `現在の humanScale / _referenceHumanScale` で割る。Generic / None のアバターは humanScale が 1 なので影響しない
-- 目的（Tooltip より）: アバターごとの体格差を吸収し、同じアニメーションで同じ距離を動かす
-- 影響: 基準値の初期値が `1` なので、**humanScale が 1 でない Humanoid では、Inspector を何も変えなくても移動量が変わる**。TCC のサンプルで使っている Humanoid のルートモーション移動が今までと変わる可能性がある（未確認）
-- 検討点: 既存の挙動を変えたくなければ、正規化を有効にするかどうかのフラグを足す（初期値は無効）などの対応が要る
+- 目的（Tooltip より）: アバターごとの体格差を吸収し、同じアニメーションで同じ距離を動かす。AGF にはアバターの切り替え機能があり、アバターごとに大きさが違う。大きさで移動距離が変わると、技の性能そのものが変わってしまうため
+- 影響: 基準値の初期値が `1` なので、**humanScale が 1 でない Humanoid では、Inspector を何も変えなくても移動量が変わる**。AGF の Player（humanScale 0.6516）では、ルートモーションの移動量が約 1.535 倍（`1 / 0.6516`）になっていた。CM-01200 の浮きも、この倍率で 0.28 から 0.43 に拡大されていた
+- 問題点: Generic のアバターにも割り算をしている。Generic は humanScale が 1 なので、基準値を 1 以外にすると Generic の移動量まで変わる
 
 ### Extended_Project_TCC への反映
 
-- 見送った。基準値の初期値が `1` のままだと、humanScale が 1 でない Humanoid の移動量が黙って変わるため
-- AGF の Player（humanScale 0.6516）では、ルートモーションの移動量が約 1.535 倍（`1 / 0.6516`）になっていた。CM-01200 の浮きも、この倍率で 0.28 から 0.43 に拡大されていた
-- 必要になったら、正規化の有効・無効のフラグ（初期値は無効）とあわせて入れる
+正規化するかどうかを選べる形にして反映した。
+
+- Inspector 項目
+  - `Normalize Human Scale`: 正規化するかどうか。**初期値は無効**で、元の TCC と同じ挙動（アバターの大きさに比例して移動量が変わる）になる
+  - `Reference Human Scale`: 移動距離の基準にするアバターの humanScale。初期値は `1`（クリップ自体の、正規化された移動量になる）
+- 有効なときは、ルートモーションの速度と deltaPosition に `Reference Human Scale / Animator.humanScale` を掛ける。回転には掛けない
+- **Humanoid のアバター（`Animator.isHuman`）にだけ適用する**。AGF の問題点を直したもの
+- アバターの切り替えに合わせて変えられるよう、`NormalizeHumanScale` / `ReferenceHumanScale` プロパティでも読み書きできる
+- AGF と同じ挙動にするには、`Normalize Human Scale` を有効にし、`Reference Human Scale` を AGF で設定していた値にする
 
 ## CM-01000: ISS-00051 の調査ログと低 FPS 対策を入れて削除（差し引きなし）
 

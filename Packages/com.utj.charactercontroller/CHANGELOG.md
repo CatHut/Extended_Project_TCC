@@ -13,6 +13,10 @@
 
 - `TinyCharacterController.InputSystem` アセンブリが `Utj.TinyCharacterController` を参照するようにした
 
+### Fixed
+
+- `PlayerInputMoveSource`: PlayerInput の Behavior が `Send Messages` / `Broadcast Messages` のとき、入力のたびに `MissingMethodException` が出ていた。内部のメソッド名 `OnMove` が、PlayerInput の送る `OnMove(InputValue)` と同じ名前になっていたため。メソッド名を変えた
+
 ### 使う側のプロジェクトでの注意
 
 - `PlayerInputMoveSource` を含む `TinyCharacterController.InputSystem` アセンブリは、Scripting Define Symbols に `SUPPORT_TCC` がないとコンパイルされない。定義がないとエラーにはならず、コンポーネントが見つからない状態になる。`MoveInputRelay` にはこの条件はない

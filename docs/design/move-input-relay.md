@@ -117,6 +117,8 @@ Packages/com.utj.charactercontroller/Runtime/
 - `OnEnable` のときに、アクションの現在の値を読み取って渡す。スティックを倒したまま有効になった場合への対策
 - `OnDisable` のときにゼロを渡す
 - MoveControl を直接呼ばない。必ず MoveInputRelay を経由する
+- PlayerInput の Behavior（`Send Messages` / `Broadcast Messages` / `Invoke Unity Events` / `Invoke C# Events`）に関係なく動く。`Send Messages` 系の Behavior は `"On" + アクション名` のメソッドを名前で探して呼ぶので、内部のメソッドにはこの形の名前（`OnMove` など）を使わない
+- PlayerInput の Default Map が未設定だと、どのアクションマップも有効にならず、入力が届かない。使う側で Default Map を設定する
 
 ### 使い分け
 

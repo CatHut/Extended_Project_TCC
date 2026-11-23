@@ -48,3 +48,6 @@ TCC には、ユーザ入力などを `MoveControl` に渡す部品がなく、�
   - クラス名は `MoveInputRelay` / `PlayerInputMoveSource` に決めた。`SUPPORT_TCC` が必要なことは、クラスのコメントと CHANGELOG に書いた
   - 初版の設計書とチケットに、このリポジトリの外の情報（別プロジェクトのファイル名・クラス名、作業環境の規約）を書いていたので削除した
   - コンパイルエラーなし。`MoveInputRelayTest`（PlayMode、10件）はすべて成功。`PlayerInputMoveSource` はコンパイルされることだけ確認し、実際の入力での動作はまだ確認していない
+- 2026-11-23: テスト用シーンで、PlayerInputMoveSource を使って WASD で動くことを確認した
+  - PlayerInput の Default Map が未設定だと、アクションマップが有効にならず入力が届かない（設定の問題）
+  - PlayerInput の Behavior が `Send Messages` のとき、入力のたびに `MissingMethodException` が出た。内部のメソッド名 `OnMove` が、PlayerInput の送る `OnMove(InputValue)` とぶつかっていたため。`HandleMoveAction` に名前を変えて直した

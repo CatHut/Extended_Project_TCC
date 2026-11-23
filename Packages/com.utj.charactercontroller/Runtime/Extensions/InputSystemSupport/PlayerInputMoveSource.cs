@@ -77,8 +77,8 @@ namespace Unity.TinyCharacterController.Extensions
                 return;
             }
 
-            _action.performed += OnMove;
-            _action.canceled += OnMove;
+            _action.performed += HandleMoveAction;
+            _action.canceled += HandleMoveAction;
 
             // Send the current value in case the stick is already held when this component is enabled.
             _relay.SetInput(_action.ReadValue<Vector2>());
@@ -88,8 +88,8 @@ namespace Unity.TinyCharacterController.Extensions
         {
             if (_action != null)
             {
-                _action.performed -= OnMove;
-                _action.canceled -= OnMove;
+                _action.performed -= HandleMoveAction;
+                _action.canceled -= HandleMoveAction;
                 _action = null;
             }
 
@@ -98,7 +98,11 @@ namespace Unity.TinyCharacterController.Extensions
                 _relay.SetInput(Vector2.zero);
         }
 
-        private void OnMove(InputAction.CallbackContext context)
+        // Do not name this "On" + action name (for example, OnMove).
+        // PlayerInput with the "Send Messages" / "Broadcast Messages" behavior calls
+        // SendMessage("On" + action name, InputValue), which finds a method with that name
+        // and throws MissingMethodException because the parameter type does not match.
+        private void HandleMoveAction(InputAction.CallbackContext context)
         {
             var value = context.phase == InputActionPhase.Canceled
                 ? Vector2.zero

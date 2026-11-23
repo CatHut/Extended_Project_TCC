@@ -1,10 +1,10 @@
 ---
 id: TSK-00003
 title: 2D 物理（Collider2D）のステージで動く Brain と Check を追加する
-status: 対応中
+status: 完了
 priority: MID
 created: 2026-11-23
-closed:
+closed: 2026-11-23
 related:
   - docs/design/physics2d-support.md
   - Packages/com.utj.charactercontroller/Runtime/Components/Brain/CharacterBrain.cs
@@ -33,8 +33,8 @@ TCC の Brain と Check は 3D 物理（PhysX）で当たり判定をしてい�
 
 - [x] `CharacterBrain2D`・`GroundCheck2D`・`HeadContactCheck2D` と、アセンブリ定義を追加する
 - [x] PlayMode テストを追加する（落下して `BoxCollider2D` の地面に着地する / 壁で止まる / ジャンプして天井で止まる / 向きが左右に切り替わる）
-- [ ] このプロジェクトで、コンパイルエラーがなく、既存のテストを含めてすべて通る
-- [ ] 2D のステージで、`MoveControl`・`JumpControl`・`Gravity` を組み合わせて、移動・ジャンプ・着地ができることを画面で確認する
+- [x] このプロジェクトで、コンパイルエラーがなく、既存のテストを含めてすべて通る
+- [x] 2D のステージで、`MoveControl`・`JumpControl`・`Gravity` を組み合わせて、移動・ジャンプ・着地ができることを画面で確認する
 - [x] `package.json` のバージョンを 0.7.2 に上げ、CHANGELOG に書く
 - [x] `Documentations/Components/Runtime/` に3つのコンポーネントの文書（日英）を追加し、目次（`Componentlist_ja.md`・`Componentlist_en.md`）に載せる
 
@@ -53,3 +53,9 @@ TCC の Brain と Check は 3D 物理（PhysX）で当たり判定をしてい�
   - 利用側のプロジェクト（2D の確認用）でコンパイルエラー・警告なし
   - PlayMode テスト（Physics2DSupportTest、7件）はすべて成功。`MoveControl` は速度が停止のしきい値を超えてから向きを要求するので、向きのテストは 0.2 秒待つようにした
   - 全体の PlayMode テストは 222 件中 217 件成功、5 件失敗。失敗は `BrainTest.移動("CharacterBrain")`・`BrainTest.回転`（2件、90 に対して 89.9998）・`MoveWithPlatformTest.地面を回す`（2件）。この 2 クラスだけを流しても同じ 5 件が失敗し、テストのファイルは元の Project_TCC のリリースから変わっていないので、今回の変更より前からの失敗と判断した。テストはバッチモード（`unity test`）で流した
+- 2026-11-23: 利用側のプロジェクト（2D の確認用シーン）で、パッドとキーボードで移動・ジャンプ・着地ができることをユーザが画面で確認した
+- 2026-11-23: このプロジェクトを Editor で開き、PlayMode テストを流した。222 件すべて成功
+  - バッチモード（`unity test`）で失敗した 5 件も、Editor では成功した。失敗はバッチモードでだけ起きる（原因は未調査）
+  - Addressables の `Built In Data.asset` は、このプロジェクトを開くと（バッチモードでも Editor でも）書き換わる。作業と関係ないのでコミットしない
+  - テストは Editor で流すほうがよい（バッチモードでは上の 5 件が失敗する）
+- 2026-11-23: ユーザの承認を得て完了。テストの実行の注意（Editor で流す、バッチモードの 5 件の失敗）を CLAUDE.md の EPT-00300（テストの実行）に書いた

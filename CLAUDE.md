@@ -26,3 +26,13 @@ Project_TCC（Tiny Character Controller）を Unity 6.6 向けに更新・拡張
 - 書き方は既存の文書に合わせる（見出し: Namespace・概要・機能と操作・プロパティ・メソッドなど）。項番は付けない（元の文書の形式を保つため）
 - 既存のファイルは文字コード（BOM 付き UTF-8）を変えない
 - README.md の License Notice など、ライセンスとクレジットの表記は消さない（public-repo-policy.md#PUB-00700（ライセンス））
+
+## EPT-00300: テストの実行
+
+- **PlayMode テストは、このプロジェクトを Editor で開いて流す。** Editor が起動していれば、`unity command test run --mode playmode --async-tests --project-path <このプロジェクトのフルパス>` で開始し、`unity command test status --detail failures --json --project-path <同じパス>` で `"status": "completed"` になるまで結果を取る
+- **バッチモード（`unity test`。Editor を開かずに流す）の結果だけで、失敗と判断しない。** バッチモードでは次の 5 件が失敗するが、Editor ではすべて成功する（2026-11-23 確認。原因は未調査）
+  - `BrainTest.移動("CharacterBrain")`
+  - `BrainTest.回転("CharacterBrain")`・`BrainTest.回転("TransformBrain")`
+  - `MoveWithPlatformTest.地面を回す`（TransformBrain・CharacterBrain）
+- バッチモードで失敗が出たら、Editor で流し直してから判断する。Editor が開いていなければ、ユーザに開いてもらう
+- このプロジェクトを開くと、`Assets/AddressableAssetsData/AssetGroups/Built In Data.asset` が書き換わる（バッチモードでも Editor でも）。作業と関係ない差分なので、コミットに含めない

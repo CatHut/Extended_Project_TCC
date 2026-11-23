@@ -2,7 +2,7 @@
 
 TCC（`com.utj.charactercontroller`）のキャラクタを、`Collider2D`（`BoxCollider2D`・`TilemapCollider2D` など）で作ったステージの上で動かせるようにする。対象は、横から見た 2D のアクションゲーム（XY 平面で動き、Y が上）。
 
-- チケット: [TSK-00003](../tickets/active/TSK-00003-physics2d-brain-and-checks.md)
+- チケット: [TSK-00003](../tickets/done/TSK-00003-physics2d-brain-and-checks.md)
 
 ## カテゴリ
 

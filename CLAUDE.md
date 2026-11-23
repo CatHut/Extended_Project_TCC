@@ -14,5 +14,15 @@ Project_TCC（Tiny Character Controller）を Unity 6.6 向けに更新・拡張
 
 | 置き場所 | 内容 |
 |---|---|
-| `README.md`・`LICENSE`・`CONTRIBUTING.md`・`Documentations/` | 元の Project_TCC から引き継いだ文書。手を入れない |
+| `Documentations/` | コンポーネントのリファレンスとチュートリアル（元の Project_TCC から引き継いだもの）。コンポーネントを追加・変更したら合わせて更新する |
+| `README.md`・`CONTRIBUTING.md` | 元の Project_TCC から引き継いだ文書。必要なら更新してよい |
+| `LICENSE` | 変更しない |
 | `docs/` | このリポジトリで追加した設計書・チケット・指針 |
+
+### Documentations/ の更新
+
+- コンポーネントを追加したら、`Documentations/Components/Runtime/<クラス名>_ja.md` と `_en.md` を作り、目次（`Documentations/Componentlist_ja.md`・`Componentlist_en.md`）の該当する分類に追記する
+- 既存のコンポーネントの公開 API・Inspector の項目・挙動を変えたら、そのコンポーネントの文書（日英とも）を直す
+- 書き方は既存の文書に合わせる（見出し: Namespace・概要・機能と操作・プロパティ・メソッドなど）。項番は付けない（元の文書の形式を保つため）
+- 既存のファイルは文字コード（BOM 付き UTF-8）を変えない
+- README.md の License Notice など、ライセンスとクレジットの表記は消さない（public-repo-policy.md#PUB-00700（ライセンス））

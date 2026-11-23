@@ -2,6 +2,21 @@
 
 この CHANGELOG は、このフォーク（Extended_Project_TCC）で加えた変更だけを記録する。0.7.0 までの変更内容は記録していない。
 
+## [0.7.2] - 2026-11-23
+
+### Added
+
+- 2D 物理（`Collider2D`）で作ったステージで動くキャラクターの部品を、アセンブリ `TinyCharacterController.Physics2D`（`Runtime/Extensions/Physics2DSupport/`）に追加した。物理シミュレーションは使わない
+  - `CharacterBrain2D`（`Unity.TinyCharacterController.Brain`）: Kinematic の `Rigidbody2D` と `CapsuleCollider2D` を使い、`Physics2D` の判定で、コライダーの手前で止まり面に沿って滑る移動を行う Brain。XY 平面を動き、Z 座標は変えない。向きは既定で左右の 2 方向にすぐ切り替える（`TurnMode.SnapLeftRight`）
+  - `GroundCheck2D`（`Unity.TinyCharacterController.Check`）: `GroundCheck` と同じ地面の判定を 2D で行う。`IGroundObject.GroundCollider` は常に `null` で、2D のコライダーは `GroundCollider2D` で返す
+  - `HeadContactCheck2D`（`Unity.TinyCharacterController.Check`）: `HeadContactCheck` と同じ頭上の判定を 2D で行う。`JumpControl` を使う場合に必要
+- `Documentations/` に上の3つのコンポーネントの文書を追加した
+
+### 使う側のプロジェクトでの注意
+
+- `TinyCharacterController.Physics2D` アセンブリは、2D 物理のモジュール（`com.unity.modules.physics2d`）が有効なときだけコンパイルされる。`SUPPORT_TCC` は不要
+- 2D のキャラクターには 2D 版の Brain と Check を付ける。3D 版の Check（`GroundCheck` など）は 2D のコライダーを検出しない
+
 ## [0.7.1] - 2026-11-23
 
 ### Added

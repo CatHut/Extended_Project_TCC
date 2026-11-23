@@ -2,6 +2,7 @@
 
 ## Brain
 * [ CharacterBrain ]( ./Components/Runtime/CharacterBrain_en.md )
+* [ CharacterBrain2D ]( ./Components/Runtime/CharacterBrain2D_en.md )
 * [ NavmeshBrain ]( ./Components/Runtime/NavmeshBrain_en.md )
 * [ RigidbodyBrain ]( ./Components/Runtime/RigidbodyBrain_en.md )
 * [ TransformBrain ]( ./Components/Runtime/TransformBrain_en.md )
@@ -13,7 +14,9 @@
 * [ ClosestTargetCheck ]( ./Components/Runtime/ClosestTargetCheck_en.md )
 * [ DistanceFromPlayerCheck ]( ./Components/Runtime/DistanceFromPlayerCheck_en.md )
 * [ GroundCheck ]( ./Components/Runtime/GroundCheck_en.md )
+* [ GroundCheck2D ]( ./Components/Runtime/GroundCheck2D_en.md )
 * [ HeadCheck_HeightBased ]( ./Components/Runtime/HeadCheck_HeightBased_en.md )
+* [ HeadContactCheck2D ]( ./Components/Runtime/HeadContactCheck2D_en.md )
 * [ HeadPositionCheck ]( ./Components/Runtime/HeadPositionCheck_en.md )
 * [ RangeTargetCheck ]( ./Components/Runtime/RangeTargetCheck_en.md )
 * [ SightCheck ]( ./Components/Runtime/SightCheck_en.md )

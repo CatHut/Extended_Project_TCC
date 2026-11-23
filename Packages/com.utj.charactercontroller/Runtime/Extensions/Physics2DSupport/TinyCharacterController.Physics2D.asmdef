@@ -1,0 +1,25 @@
+{
+    "name": "TinyCharacterController.Physics2D",
+    "rootNamespace": "Unity.TinyCharacterController",
+    "references": [
+        "GUID:fd9b4bfdbc54f44ec99514cf98018183",
+        "GUID:61c5e73958f75445d99e546b9dc1a360"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "TCC_PHYSICS2D_EXISTS"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.modules.physics2d",
+            "expression": "1.0.0",
+            "define": "TCC_PHYSICS2D_EXISTS"
+        }
+    ],
+    "noEngineReferences": false
+}

@@ -1,10 +1,10 @@
 ---
 id: ISS-00004
 title: CharacterBrain2D が壁にわずかにめり込むと、その壁を通り抜ける
-status: 対応中
+status: 完了
 priority: HIGH
 created: 2026-11-24
-closed:
+closed: 2026-11-24
 related:
   - docs/design/physics2d-support.md
   - Packages/com.utj.charactercontroller/Runtime/Extensions/Physics2DSupport/CharacterBrain2D.cs
@@ -50,8 +50,9 @@ related:
 - [x] テストを追加する（壁にめり込んだ位置から押し出され壁を抜けない・動く Kinematic のコライダーにめり込まれると押し出される）
 - [x] PlayMode テストがすべて成功する（Editor で 224 件）
 - [x] `Documentations/` の CharacterBrain2D（日英）と設計書を更新する
-- [ ] ユーザが実際の操作で確認する
+- [x] ユーザが実際の操作で確認する
 
 ## 作業ログ
 
 - 2026-11-24: 作成・修正。原因を再現で確認し、押し出しの処理を加えた。PlayMode テスト 224 件がすべて成功。別プロジェクトでも、再現手順で止まることを確認した。不具合の報告と修正の承認はユーザから受けた。ユーザの確認待ち
+- 2026-11-24: ユーザが実際の操作で確認（今のところ壁を通り抜けない）。完了

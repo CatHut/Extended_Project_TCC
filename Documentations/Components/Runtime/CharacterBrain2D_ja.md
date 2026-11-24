@@ -10,6 +10,7 @@
 
 ## 機能と操作:
 - **2D の当たり判定**: カプセルを移動方向に飛ばし、コライダーの手前で止める。残りの移動は面に沿った成分だけにして、最大 `_maxIterations` 回まで繰り返す。判定の対象は `CharacterSettings.EnvironmentLayer` のレイヤーで、トリガーと自分のコライダーは除く。
+- **めり込みの押し出し**: 移動の前に、カプセルが環境のコライダーに重なっていれば、いちばん深いものから最短の方向へ押し出し、`_skinWidth` のすき間を空ける（最大 4 回）。動く Kinematic のコライダーがめり込んできたときも押し出される。
 - **地面への吸い付け**: `GroundCheck2D` がしっかり接地していて上に向かって動いていないとき、地面までの距離だけ下げる（`CharacterBrain` と同じ）。
 - **向きの反映**: `TurnMode.SnapLeftRight`（既定）では、要求された向きに応じて右向き（回転 0）か左向き（Y 軸まわりに 180°）にすぐ切り替える。`TurnMode.Free` では回転をそのまま反映する。
 - **Z 座標の固定**: Z 座標は変えない。
@@ -18,7 +19,7 @@
 ## 注意:
 - `TurnMode.SnapLeftRight` では、キャラクターの前は Transform のローカルの +X（右向きのとき）になる。`transform.forward` は奥行き方向を向いたままなので、`transform.forward` を前として使う処理（`MoveControl.DeltaDirectionAngle` など）は値が合わない。
 - ほかのキャラクターや Rigidbody を押す処理（`CharacterBrain.Pushable`）はない。
-- ほかのコライダーが動いてきてめり込んだときに押し出す処理はない。
+- めり込みの押し出しは、移動の更新のときに行う。ワープ（`Warp`）の直後は、次の更新まで重なったままになる。
 
 ## プロパティ
 | Name | Description |

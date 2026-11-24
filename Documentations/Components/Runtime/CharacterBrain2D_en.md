@@ -9,6 +9,7 @@
 Use it with `GroundCheck2D` and `HeadContactCheck2D`. The 3D checks (`GroundCheck` and so on) do not detect 2D colliders. `HeadContactCheck2D` is required when using `JumpControl`.
 
 ## Features and Operation:
+- **Depenetration**: Before moving, if the capsule overlaps environment colliders, pushes it out of the deepest one along the shortest way out and leaves the `_skinWidth` gap (up to 4 times). A moving Kinematic collider that moves into the character also pushes it out.
 - **2D Collision**: Casts the capsule in the direction of the movement and stops in front of the collider. The remaining movement keeps only the component along the surface, repeated up to `_maxIterations` times. The targets are the layers in `CharacterSettings.EnvironmentLayer`, excluding triggers and the character's own colliders.
 - **Ground Snapping**: When `GroundCheck2D` is firmly on the ground and the character is not moving up, moves the character down by the distance to the ground (same as `CharacterBrain`).
 - **Direction**: With `TurnMode.SnapLeftRight` (default), faces right (rotation 0) or left (180 degrees around Y) immediately, depending on the requested direction. With `TurnMode.Free`, applies the rotation as is.
@@ -18,7 +19,7 @@ Use it with `GroundCheck2D` and `HeadContactCheck2D`. The 3D checks (`GroundChec
 ## Notes:
 - With `TurnMode.SnapLeftRight`, the front of the character is the local +X of the Transform (when facing right). `transform.forward` keeps facing the depth direction, so processing that uses `transform.forward` as the front (such as `MoveControl.DeltaDirectionAngle`) does not get the expected values.
 - There is no pushing of other characters or Rigidbodies (`CharacterBrain.Pushable`).
-- There is no depenetration when another collider moves into the character.
+- Depenetration happens in the movement update. Right after a `Warp`, the character stays overlapped until the next update.
 
 ## Properties
 | Name | Description |

@@ -44,6 +44,7 @@ namespace Unity.TinyCharacterController.Brain
         private const float MinMoveDistance = 0.0001f;
         private const float FacingThreshold = 0.01f;
         private const int MaxHits = 8;
+        private const int MaxDepenetrationIterations = 4;
 
         /// <summary>
         /// How the character's direction is applied to the Transform.
@@ -64,6 +65,7 @@ namespace Unity.TinyCharacterController.Brain
         private int _maxIterations = 3;
 
         private static readonly RaycastHit2D[] Hits = new RaycastHit2D[MaxHits];
+        private static readonly Collider2D[] Overlaps = new Collider2D[MaxHits];
 
         private readonly OwnCollider2DCache _ownColliders = new();
         private Rigidbody2D _rigidbody;
@@ -268,6 +270,10 @@ namespace Unity.TinyCharacterController.Brain
             IsHitInThisFrame = false;
             LastHitNormal = Vector2.zero;
 
+            // The cast ignores colliders that the capsule already overlaps, so push the capsule out first.
+            // Without this, a character that sinks into a wall even slightly can walk through it.
+            position = Depenetrate(position);
+
             for (var i = 0; i < _maxIterations; i++)
             {
                 var distance = delta.magnitude;
@@ -300,13 +306,71 @@ namespace Unity.TinyCharacterController.Brain
             return position;
         }
 
+        /// <summary>
+        /// Pushes the capsule out of the environment colliders that it overlaps, along the shortest way out,
+        /// and leaves the skin width as a gap. This happens when the capsule sinks into a collider
+        /// (for example, a moving Kinematic collider moves into the character).
+        /// </summary>
+        private Vector2 Depenetrate(Vector2 position)
+        {
+            if (_rigidbody == null || _capsule == null)
+                return position;
+
+            var filter = Physics2DQueryUtility.CreateEnvironmentFilter(Settings.EnvironmentLayer);
+            for (var i = 0; i < MaxDepenetrationIterations; i++)
+            {
+                GetCapsule(position, out var center, out var size);
+                var count = Physics2D.OverlapCapsule(center, size, CapsuleDirection2D.Vertical, 0, filter, Overlaps);
+                if (count == 0)
+                    break;
+
+                // Physics2D.Distance uses the pose of the Rigidbody2D, so move the body to the position to check.
+                // Setting Rigidbody2D.position takes effect on queries immediately.
+                _rigidbody.position = position;
+
+                var found = false;
+                var deepest = default(ColliderDistance2D);
+                for (var j = 0; j < count; j++)
+                {
+                    var other = Overlaps[j];
+                    if (other == null || _ownColliders.Contains(other))
+                        continue;
+
+                    var distance = Physics2D.Distance(_capsule, other);
+                    if (!distance.isValid || !distance.isOverlapped)
+                        continue;
+
+                    if (!found || distance.distance < deepest.distance)
+                    {
+                        deepest = distance;
+                        found = true;
+                    }
+                }
+
+                if (!found)
+                    break;
+
+                // The normal points from the capsule to the other collider, and the distance is negative.
+                position += deepest.normal * (deepest.distance - _skinWidth);
+            }
+
+            return position;
+        }
+
+        /// <summary>
+        /// The capsule in world space at the given position.
+        /// Calculated from the position so that queries do not depend on the synchronization of the Rigidbody2D position.
+        /// </summary>
+        private void GetCapsule(Vector2 position, out Vector2 center, out Vector2 size)
+        {
+            var scale = CachedTransform.lossyScale;
+            center = position + new Vector2(_capsule.offset.x * scale.x, _capsule.offset.y * scale.y);
+            size = new Vector2(_capsule.size.x * Mathf.Abs(scale.x), _capsule.size.y * Mathf.Abs(scale.y));
+        }
+
         private bool CastCapsule(Vector2 position, Vector2 direction, float distance, out RaycastHit2D closestHit)
         {
-            // Calculate the capsule from the current position so that the query does not depend on
-            // the synchronization of the Rigidbody2D position.
-            var scale = CachedTransform.lossyScale;
-            var center = position + new Vector2(_capsule.offset.x * scale.x, _capsule.offset.y * scale.y);
-            var size = new Vector2(_capsule.size.x * Mathf.Abs(scale.x), _capsule.size.y * Mathf.Abs(scale.y));
+            GetCapsule(position, out var center, out var size);
             var filter = Physics2DQueryUtility.CreateEnvironmentFilter(Settings.EnvironmentLayer);
 
             var count = Physics2D.CapsuleCast(center, size, CapsuleDirection2D.Vertical, 0,

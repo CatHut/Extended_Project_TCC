@@ -96,6 +96,54 @@ namespace Unity.TinyCharacterController.Test
         }
 
         [UnityTest]
+        public IEnumerator 壁にめり込んだ位置から押し出され壁を抜けない()
+        {
+            // The wall's left surface is at x = 2. Start 0.1 inside the wall.
+            CreateBox("Wall", new Vector2(2.5f, 2.5f), new Vector2(1, 5));
+            var radius = 0.5f;
+            var player = CreatePlayer(new Vector3(2 - radius + 0.1f, 0.05f, 0));
+            var move = player.GetComponent<MoveControl>();
+            radius = player.GetComponent<CharacterSettings>().Radius;
+
+            yield return new WaitForSeconds(0.3f);
+            move.Move(Vector2.right);
+            yield return new WaitForSeconds(1.0f);
+
+            var x = player.transform.position.x;
+            Assert.That(x, Is.LessThanOrEqualTo(2 - radius + 0.001f));
+            Assert.That(x, Is.GreaterThan(2 - radius - Tolerance));
+        }
+
+        [UnityTest]
+        public IEnumerator 動くKinematicのコライダーにめり込まれると押し出される()
+        {
+            var player = CreatePlayer(new Vector3(0, 0.05f, 0));
+            var radius = player.GetComponent<CharacterSettings>().Radius;
+
+            // A Kinematic box (1 x 1) moved by its Transform from the left into the character.
+            var pusher = new GameObject("Pusher");
+            pusher.transform.position = new Vector2(-3f, 0.6f);
+            var body = pusher.AddComponent<Rigidbody2D>();
+            body.bodyType = RigidbodyType2D.Kinematic;
+            pusher.AddComponent<BoxCollider2D>().size = Vector2.one;
+            _objects.Add(pusher);
+
+            yield return new WaitForSeconds(0.3f);
+            for (var time = 0f; time < 1.0f; time += Time.deltaTime)
+            {
+                // The box's right surface reaches x = 0.5, past the character's center.
+                var x = Mathf.Lerp(-3f, 0f, time / 0.8f);
+                pusher.transform.position = new Vector2(x, 0.6f);
+                body.position = pusher.transform.position;
+                yield return null;
+            }
+
+            // The character is pushed to the right of the box.
+            Assert.That(player.transform.position.x, Is.GreaterThanOrEqualTo(0.5f + radius - 0.001f));
+            Assert.That(player.transform.position.y, Is.InRange(0f, Tolerance));
+        }
+
+        [UnityTest]
         public IEnumerator ジャンプして天井で止まる()
         {
             // The ceiling's bottom surface is at y = 2.5.
